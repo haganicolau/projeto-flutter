@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alfabank/components/progress_circular.dart';
+import 'package:flutter_alfabank/database/app_database.dart';
+import 'package:flutter_alfabank/database/dao/transferencia_dao.dart';
 import 'package:flutter_alfabank/screen/formulario_transferencia.dart';
 import 'package:flutter_alfabank/modules/transferencia.dart';
 import '../components/item_transferencia.dart';
 
 class ListaTransferencia extends StatefulWidget {
-
-  final List<Transferencia> listaTransferencias = List();
 
   @override
   State<StatefulWidget> createState() {
@@ -15,6 +16,9 @@ class ListaTransferencia extends StatefulWidget {
 }
 
 class _ListaTransferenciaState extends State<ListaTransferencia> {
+
+  final TransferenciaDAO _dao = TransferenciaDAO();
+
   @override
   Widget build(BuildContext context) {
 
@@ -23,38 +27,47 @@ class _ListaTransferenciaState extends State<ListaTransferencia> {
         title: Text("Lista de Transferências"),
         centerTitle: true,
       ),
-      body: ListView.builder(
-        itemCount: widget.listaTransferencias.length,
-        itemBuilder: (context, indice) {
-          var transferencia = widget.listaTransferencias[indice];
-          return ItemTransferencia(transferencia);
+      body: FutureBuilder <List<Transferencia>> (
+        future: Future.delayed(Duration(seconds: 2)).then((value) => this._dao.findAll()),
+        builder: (context, snapshot) {
+          List<Transferencia> listaTransferencias = snapshot.data;
+
+          switch(snapshot.connectionState) {
+            case ConnectionState.none:
+              break;
+            case ConnectionState.waiting:
+              return ProgressCircular();
+              break;
+            case ConnectionState.active:
+              break;
+            case ConnectionState.done:
+              return ListView.builder(
+                itemCount: listaTransferencias.length,
+                itemBuilder: (context, indice) {
+                  var transferencia = listaTransferencias[indice];
+                  return ItemTransferencia(transferencia);
+                },
+              );
+              break;
+          }
+
+          return Text("Error unkonw!");
         },
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
-          Future <Transferencia> future = Navigator.push(
+          Future <int> future = Navigator.push(
               context,
               MaterialPageRoute(builder: (context) {
                 return FormularioTransferencia();
               })
           );
-          print("continuou");
 
-          future.then((transferenciaRecebida){
-            print("pagina lista: $transferenciaRecebida");
-
-            if(transferenciaRecebida == null
-              || transferenciaRecebida.valor == null
-              || transferenciaRecebida.conta == null) {
-              return;
-            }
-
+          future.then((id){
             setState(() {
-              widget.listaTransferencias.add(transferenciaRecebida);
+              print("novo id: $id");
             });
-
-            print("após a lista");
           });
         },
       ),

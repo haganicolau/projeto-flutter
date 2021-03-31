@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_alfabank/database/app_database.dart';
+import 'package:flutter_alfabank/modules/transferencia.dart';
 import 'package:flutter_alfabank/screen/formulario_transferencia.dart';
+import 'package:flutter_alfabank/screen/home.dart';
 import 'package:flutter_alfabank/screen/lista_transferencia.dart';
 
-void main() => runApp(App());
+void main() {
+  runApp(App());
+  // save(Transferencia(nome:"Bruno", valor: 126.00, conta: "58896")).then((id) {
+  //   findAll().then((transferencias) => debugPrint(transferencias.toString()));
+  // });
+}
 
 class App extends StatelessWidget {
   @override
@@ -17,7 +25,7 @@ class App extends StatelessWidget {
           textTheme: ButtonTextTheme.primary
         )
       ),
-      home: ListaTransferencia(),
+      home: Home(),
     );
   }
 
