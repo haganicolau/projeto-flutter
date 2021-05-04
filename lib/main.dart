@@ -1,15 +1,21 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_alfabank/database/app_database.dart';
 import 'package:flutter_alfabank/modules/transferencia.dart';
+import 'package:flutter_alfabank/modules/usuario.dart';
+import 'package:flutter_alfabank/screen/auth/wrapper.dart';
 import 'package:flutter_alfabank/screen/formulario_transferencia.dart';
 import 'package:flutter_alfabank/screen/home.dart';
 import 'package:flutter_alfabank/screen/lista_transferencia.dart';
+import 'package:flutter_alfabank/services/auth_service.dart';
+import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(App());
-  // save(Transferencia(nome:"Bruno", valor: 126.00, conta: "58896")).then((id) {
-  //   findAll().then((transferencias) => debugPrint(transferencias.toString()));
-  // });
 }
 
 class App extends StatelessWidget {
@@ -25,7 +31,12 @@ class App extends StatelessWidget {
           textTheme: ButtonTextTheme.primary
         )
       ),
-      home: Home(),
+      home: Scaffold(
+        body: StreamProvider<Usuario>.value(
+          value: AuthService().user,
+          child: Wrapper(),
+        ),
+      )
     );
   }
 

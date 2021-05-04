@@ -1,11 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_alfabank/components/item_menu.dart';
 import 'package:flutter_alfabank/screen/lista_transferencia.dart';
+import 'package:flutter_alfabank/services/auth_service.dart';
 
 class Home extends StatelessWidget {
+
+  final _auth = AuthService();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        actions: [
+          FlatButton.icon(
+            textColor: Colors.white,
+            icon: Icon(Icons.person_add_disabled_outlined),
+            label: Text("Logout"),
+            onPressed: () async {
+              await _auth.signOut();
+            },
+          ),
+        ],
+      ),
       backgroundColor: Theme.of(context).primaryColor,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

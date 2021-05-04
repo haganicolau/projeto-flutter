@@ -1,4 +1,4 @@
-import 'package:flutter_alfabank/modules/Module.dart';
+import 'package:flutter_alfabank/modules/module.dart';
 
 class Transferencia extends Module {
   double valor;
